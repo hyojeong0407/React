@@ -1,5 +1,5 @@
-import './App.css'
 import { useState } from 'react'
+import './App.css';
 
 function Square({ value, onSquareClick }) {
   return (
@@ -9,13 +9,13 @@ function Square({ value, onSquareClick }) {
   );
 }
 
-function Board({xlsNext, squares, onPlay}) {
+function Board({xIsNext, squares, onPlay}) {
   function handleClick(i) {
     if(calculateWinner(squares) || squares[i]) {
       return;
     }
     const nextSquares = squares.slice();
-    if(xlsNext) {
+    if(xIsNext) {
       nextSquares[i] = 'X';
     } else {
       nextSquares[i] = 'O';
@@ -29,7 +29,7 @@ function Board({xlsNext, squares, onPlay}) {
   if (winner) {
     status = 'Winner: ' + winner;
   } else {
-    status = 'Next player: ' + (xlsNext ? 'X' : 'O');
+    status = 'Next player: ' + (xIsNext ? 'X' : 'O');
   }
 
   return (
@@ -57,7 +57,7 @@ function Board({xlsNext, squares, onPlay}) {
 export default function Game() {
   const [history, setHistory] = useState(() => [Array(9).fill(null)]);
   const [currentMove, setCurrentMove] = useState(0);
-  const xlsNext = currentMove % 2 === 0;
+  const xIsNext = currentMove % 2 === 0;
   const currentSquares = history[currentMove];
 
   function handlePlay(nextSquares) {
@@ -67,7 +67,7 @@ export default function Game() {
   }
 
   function jumpTo(nextMove) {
-    if (nextMove === currentMove) {
+    if (currentMove === nextMove) {
       return;
     }
     
@@ -89,11 +89,11 @@ export default function Game() {
   });
 
   return (
-    <div className='game'>
-      <div className='Game-board'>
-        <Board xlsNext={xlsNext} squares = {currentSquares} onPlay={handlePlay} />
+    <div className="game">
+      <div className="game-board">
+        <Board xIsNext={xIsNext} squares = {currentSquares} onPlay={handlePlay} />
       </div>
-      <div className='game-info'>
+      <div className="game-info">
         <ol>{moves}</ol>
       </div>
     </div>
