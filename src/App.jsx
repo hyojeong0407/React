@@ -1,92 +1,99 @@
 import { useState } from 'react'
 import './App.css';
 
+// Title 컴포넌트는 페이지의 제목을 표시
 function Title() {
   return (
     <h1>어느 지역을 검색하시겠습니까?</h1>
   )
 }
 
+// FilterableTouristTable 컴포넌트는 관광지 목록을 필터링할 수 있는 기능을 제공
 function FilterableTouristTable({ places }) {
-  const [filterText, setFilterText] = useState('');
+  const [filterText, setFilterText] = useState('');   // 필터링할 텍스트 상태를 관리
 
   return (
     <div>
       <SearchBar
-        filterText={filterText}
-        onFilterTextChange={setFilterText}
+        filterText={filterText}   // 필터링할 텍스트를 SearchBar 컴포넌트에 전달
+        onFilterTextChange={setFilterText}    // 필터링할 텍스트를 변경하는 함수를 SearchBar 컴포넌트에 전달
       />
       <TouristTable
-        places={places}
-        filterText={filterText}
+        places={places}   // 관광지 목록을 TouristTable 컴포넌트에 전달
+        filterText={filterText}   // 필터링할 텍스트를 TouristTable 컴포넌트에 전달
       />
     </div>
   );
 }
 
+// SearchBar 컴포넌트는 사용자가 입력한 필터링할 텍스트를 관리
 function SearchBar({ filterText, onFilterTextChange }) {
   return (
     <form>
-      <input type='text' value={filterText} placeholder="자치구를 입력하세요" onChange={(e) => onFilterTextChange(e.target.value)} />
+      <input type='text' value={filterText} placeholder="자치구를 입력하세요" onChange={(e) => onFilterTextChange(e.target.value)} />   {/* 사용자가 입력한 텍스트를 onFilterTextChange 함수를 통해 상위 컴포넌트로 전달 */}
     </form>
   );
 }
 
+// TouristCategoryRow 컴포넌트는 관광지 카테고리를 표시
 function TouristCategoryRow({ category }) {
   return (
     <tr>
-      <th colSpan="2">{category}</th>
+      <th colSpan="2">{category}</th>   {/* colSpan 속성을 사용하여 카테고리 이름이 두 개의 열을 차지하도록 설정 */}
     </tr>
   )
 }
 
+// TouristRow 컴포넌트는 각 관광지의 이름과 설명을 표시
 function TouristRow({ place }) {
   return (
     <tr>
       <td className='name'>
         <a href={place.link} target="_blank">
-          {place.name}
+          {place.name}    {/* 관광지 이름을 클릭하면 해당 링크로 이동 */}
         </a>
         </td>
-      <td>{place.descreption}</td>
+      <td>{place.descreption}</td>    {/* 관광지 설명 */}
     </tr>
   )
 }
 
+// TouristTable 컴포넌트는 관광지 목록을 표시
 function TouristTable({ places, filterText }) {
-  const rows = [];
-  let lastCategory = null;
+  const rows = [];    // 관광지 목록을 저장할 배열
+  let lastCategory = null;    // lastCategory는 마지막으로 렌더링된 카테고리를 저장하여 중복 렌더링을 방지
 
   Object.keys(places).forEach((category) => {
     if (filterText && category.indexOf(filterText) === -1) {
-      return;
+      return;   // 필터링할 텍스트가 카테고리 이름에 포함되지 않으면 해당 카테고리를 렌더링하지 않음
     }
-    if (category !== lastCategory) {
+    if (category !== lastCategory) {    // 카테고리가 마지막으로 렌더링된 카테고리와 다르면
       rows.push (
-        <TouristCategoryRow category={category} key={category} />
+        <TouristCategoryRow category={category} key={category} />   // 카테고리 행을 추가
       );
     }
-    places[category].forEach((place) => {
+    places[category].forEach((place) => {   // 각 카테고리의 관광지 목록을 순회
       rows.push (
-        <TouristRow place={place} key={place.name} />
+        <TouristRow place={place} key={place.name} />   // 관광지 행을 추가
       );
     });
-    lastCategory = category;
+    lastCategory = category;    // 마지막으로 렌더링된 카테고리를 현재 카테고리로 업데이트
   });
 
   return (
     <table>
       <thead>
         <tr>
-          <th>관광지</th>
-          <th>소개</th>
+          <th>관광지</th>   {/* 관광지 이름 열 */}
+          <th>소개</th>   {/* 관광지 설명 열 */}
         </tr>
       </thead>
-      <tbody>{rows}</tbody>
+      <tbody>{rows}</tbody>   {/* rows 배열을 tbody에 렌더링 */}
     </table>
   )
 }
 
+// PLACES 객체는 각 자치구에 해당하는 관광지 목록을 저장
 const PLACES = {
   중구: [
     { name: '용두산공원', descreption: '부산광역시 중구에 있는 공원', link: 'https://visitbusan.net/kr/index.do?menuCd=DOM_000000201001001000&uc_seq=368&lang_cd=ko' },
@@ -151,11 +158,11 @@ const PLACES = {
   ]
 }
 
-export default function App() {
+export default function App() {   // App 컴포넌트는 전체 애플리케이션을 구성
   return (
     <div>
-      <Title />
-      <FilterableTouristTable places={PLACES} />
+      <Title />   {/* 제목 컴포넌트 */}
+      <FilterableTouristTable places={PLACES} />    {/* 필터링 가능한 관광지 테이블 컴포넌트 */}
     </div>
   )
 }
